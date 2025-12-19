@@ -15,9 +15,12 @@ internal class BlobProofsManagerV1 : IBlobProofsManager
 
     public ShardBlobNetworkWrapper AllocateWrapper(params ReadOnlySpan<byte[]> blobs)
     {
-        ShardBlobNetworkWrapper result = new(blobs.ToArray(), new byte[blobs.Length][], new byte[blobs.Length * Ckzg.CellsPerExtBlob][], ProofVersion.V1);
+        int blobCount = blobs.Length;
+        int proofCount = blobCount * Ckzg.CellsPerExtBlob;
 
-        for (int i = 0; i < blobs.Length; i++)
+        ShardBlobNetworkWrapper result = new(blobs.ToArray(), new byte[blobCount][], new byte[proofCount][], ProofVersion.V1);
+
+        for (int i = 0; i < blobCount; i++)
         {
             result.Commitments[i] = new byte[Ckzg.BytesPerCommitment];
             for (int j = 0; j < Ckzg.CellsPerExtBlob; j++)
